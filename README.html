@@ -237,15 +237,22 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",mo
 .tree-glyph{color:var(--accent);font-weight:700;flex:0 0 auto;}
 .tree-name{font-weight:700;flex:0 0 auto;}
 .tree-desc{color:var(--muted);font-size:12.5px;min-width:0;}
+.pt-h{font-size:15px;font-weight:700;margin:20px 0 2px;}
+table.pt{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0 4px;}
+table.pt th{text-align:left;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted);padding:8px 10px;border-bottom:1.5px solid var(--line);white-space:nowrap;}
+table.pt td{padding:9px 10px;border-bottom:1px dashed var(--line);vertical-align:top;line-height:1.6;}
+table.pt tbody tr:last-child td{border-bottom:none;}
+table.pt td b{font-size:13.5px;}
+table.pt td code{white-space:nowrap;}
 </style>
 </head>
 <body>
 <div class="page">
 
 <header class="hero">
-  <span class="kicker">WorkBuddy Skill · 使用说明</span>
+  <span class="kicker">Agent Skill · 使用说明</span>
   <h1>AI 非录音笔文本总结</h1>
-  <p class="lede">把录音转写、课程讲稿、口播文案，直接变成<em class="hl">单文件 HTML 总结网页</em>：零外部依赖、明暗双主题、移动端安全网内置。支持<em class="hl">自定义主题色</em>，不指定则默认原始绿色系。本页由该 skill 以<em class="hl">科技蓝 #2563eb</em>生成，即效果预览。</p>
+  <p class="lede">把录音转写、课程讲稿、口播文案，直接变成<em class="hl">单文件 HTML 总结网页</em>：零外部依赖、明暗双主题、移动端安全网内置。支持<em class="hl">自定义主题色</em>，不指定则默认原始绿色系。一份目录可在 <em class="hl">WorkBuddy / Claude / Cursor / Codex / DeepSeek</em> 多平台安装。本页由该 skill 以<em class="hl">科技蓝 #2563eb</em>生成，即效果预览。</p>
 </header>
 
 <div class="trio">
@@ -336,7 +343,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",mo
   <div class="insight"><b>洞察</b><span>on-accent 按亮度自动切深/浅文字，亮色主题不会出现低对比度白字；warn 警示家族是语义色，不随主题变化。</span></div>
 </section>
 
-<div class="part rv"><span>第三部分 · 文件结构与使用</span></div>
+<div class="part rv"><span>第三部分 · 文件结构</span></div>
 
 <section class="mod rv">
   <div class="eyebrow">仓库结构</div>
@@ -359,13 +366,77 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",mo
   </figure>
 </section>
 
+<div class="part rv"><span>第四部分 · 安装与触发</span></div>
+
 <section class="mod rv">
-  <div class="eyebrow">安装与触发</div>
-  <h2>拷入目录，对话即用</h2>
-  <p>拷贝到用户级 skills 目录即可被 WorkBuddy 识别：</p>
-  <pre class="code"><code>cp -r ai-non-recorder-text-summary ~/.workbuddy/skills/</code></pre>
-  <p>在对话中直接提需求，或显式点名 skill：</p>
-  <pre class="code"><code>@ai-non-recorder-text-summary 把这段录音转写生成总结网页，用科技蓝</code></pre>
+  <div class="eyebrow">多平台安装</div>
+  <h2>一份目录，多平台通用</h2>
+  <p>本 skill 遵循 Agent Skills 开放标准（<code>SKILL.md</code> + <code>name</code>/<code>description</code> frontmatter）：原生支持 Skills 的平台，<strong>拷到对应 skills 目录即被自动发现，零改动</strong>；没有 Skills 机制的平台，把 <code>SKILL.md</code> 正文注入规则文件或系统提示词。</p>
+  <figure class="fig" data-visual-id="install-paths"
+          data-visual-title="两条安装通道：原生 Skills 平台与规则注入平台"
+          data-visual-type="流程对比图"
+          data-visual-relation="上通道为原生支持 Agent Skills 的平台，整目录拷贝后自动发现、按平台习惯触发；下通道为无 Skills 机制的平台，将 SKILL.md 正文写入规则文件或系统提示词；两通道最终汇入同一套四步生成流程"
+          data-visual-source="README.md 快速开始多平台适配：WorkBuddy、Claude Code、claude.ai、Cursor、OpenAI Codex、DeepSeek 为原生支持；Windsurf、Cline、Gemini CLI、AGENTS.md、纯 API 走规则注入">
+    <div class="vs">
+      <div class="lane lane-sub">
+        <h3>方式一 · 原生 Skills 平台</h3>
+        <div class="lt">WorkBuddy · Claude Code · claude.ai · Cursor · Codex · DeepSeek</div>
+        <div class="fnode">整目录拷入平台 skills 路径</div>
+        <div class="fconn"></div>
+        <div class="fnode loop">平台自动发现 SKILL.md</div>
+        <div class="fconn"></div>
+        <div class="fnode">@ / $ / / 菜单触发</div>
+        <div class="lane-foot">推荐 · 零改动，升级只需重新拷贝</div>
+      </div>
+      <div class="lane">
+        <h3>方式二 · 规则注入平台</h3>
+        <div class="lt">Windsurf · Cline · Gemini CLI · AGENTS.md · 纯 API</div>
+        <div class="fnode">复制 SKILL.md 正文</div>
+        <div class="fconn"></div>
+        <div class="fnode loop">写入规则文件或 system prompt</div>
+        <div class="fconn"></div>
+        <div class="fnode">自然语言直接对话</div>
+        <div class="lane-foot">scripts/ 与 references/ 需同仓可达</div>
+      </div>
+    </div>
+    <figcaption>图 4 · 安装双通道：同一份 SKILL.md，原生平台直接发现，其余平台经规则文件注入。</figcaption>
+  </figure>
+  <p class="pt-h">原生支持 Skills 的平台</p>
+  <div class="table-scroll">
+    <table class="pt">
+      <thead>
+        <tr><th>平台</th><th>用户级（全局生效）</th><th>项目级（随仓库共享）</th><th>触发方式</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>WorkBuddy</b></td><td><code>~/.workbuddy/skills/</code></td><td><code>.workbuddy/skills/</code></td><td><code>@ai-non-recorder-text-summary</code></td></tr>
+        <tr><td><b>Claude Code</b></td><td><code>~/.claude/skills/</code></td><td><code>.claude/skills/</code></td><td>自动匹配，<code>/</code> 菜单点名</td></tr>
+        <tr><td><b>claude.ai</b></td><td colspan="2">设置 → 功能 → Skills 上传 zip（需付费计划）</td><td>自动匹配</td></tr>
+        <tr><td><b>Cursor</b></td><td><code>~/.cursor/skills/</code> 或 <code>~/.agents/skills/</code></td><td><code>.cursor/skills/</code> 或 <code>.agents/skills/</code></td><td><code>/name</code> 或 <code>@name</code></td></tr>
+        <tr><td><b>OpenAI Codex</b></td><td><code>~/.agents/skills/</code></td><td><code>&lt;仓库根&gt;/.agents/skills/</code></td><td><code>/skills</code> 或 <code>$name</code></td></tr>
+        <tr><td><b>DeepSeek Deep Code</b></td><td><code>~/.agents/skills/</code></td><td><code>.deepcode/skills/</code></td><td><code>/</code> 技能选择器</td></tr>
+        <tr><td><b>DeepSeek Harness</b></td><td><code>~/.dsh/skills/</code> 或 <code>~/.agents/skills/</code></td><td><code>.dsh/skills/</code> 或 <code>.agents/skills/</code></td><td><code>/name</code> 或 <code>@name</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre class="code"><code># 按平台拷一次即可，目录名保持不变
+cp -r ai-non-recorder-text-summary ~/.workbuddy/skills/   # WorkBuddy
+cp -r ai-non-recorder-text-summary ~/.claude/skills/     # Claude Code
+cp -r ai-non-recorder-text-summary ~/.agents/skills/     # Codex / Deep Code / Cursor</code></pre>
+  <p class="pt-h">没有 Skills 机制的平台</p>
+  <div class="table-scroll">
+    <table class="pt">
+      <thead>
+        <tr><th>平台</th><th>接入文件</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Windsurf</b></td><td><code>.windsurf/rules/*.md</code></td></tr>
+        <tr><td><b>Cline</b></td><td><code>.clinerules</code></td></tr>
+        <tr><td><b>Gemini CLI</b></td><td><code>GEMINI.md</code></td></tr>
+        <tr><td><b>通用标准</b></td><td>根目录 <code>AGENTS.md</code></td></tr>
+        <tr><td><b>纯 API 调用</b></td><td>system prompt 直接粘贴 SKILL.md 正文</td></tr>
+      </tbody>
+    </table>
+  </div>
   <div class="warnbox">
     <div class="wt">两条红线</div>
     <p>安全网 CSS 禁止改动一个字符；主题色必须走 theme_tokens.py，禁止手推色值。</p>

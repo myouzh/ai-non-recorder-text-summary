@@ -2,9 +2,10 @@
 
 # AI 非录音笔文本总结
 
-**把录音转写、课程讲稿、口播文案，变成单文件 HTML 总结网页的 WorkBuddy Skill**
+**把录音转写、课程讲稿、口播文案，变成单文件 HTML 总结网页的 Agent Skill（多平台通用）**
 
-![type](https://img.shields.io/badge/type-WorkBuddy%20Skill-2563eb)
+![type](https://img.shields.io/badge/type-Agent%20Skill-2563eb)
+![platforms](https://img.shields.io/badge/platforms-WorkBuddy%20%7C%20Claude%20%7C%20Cursor%20%7C%20Codex%20%7C%20DeepSeek-2563eb)
 ![deps](https://img.shields.io/badge/dependencies-0-2563eb)
 ![theme](https://img.shields.io/badge/default%20theme-tech--blue%20%232563eb-2563eb)
 ![version](https://img.shields.io/badge/version-1.0.0-2563eb)
@@ -50,13 +51,38 @@ python3 scripts/theme_tokens.py --json               # JSON 输出
 
 ## 快速开始
 
-```bash
-# 1. 安装：拷入用户级 skills 目录
-cp -r ai-non-recorder-text-summary ~/.workbuddy/skills/
+本 skill 遵循 Agent Skills 开放标准（`SKILL.md` + `name`/`description` frontmatter），**一份目录，多平台通用**——拷到对应平台的 skills 目录即被自动发现，零改动。
 
-# 2. 对话中触发（直接提需求，或显式点名）
-@ai-non-recorder-text-summary 把这段录音转写生成总结网页，用科技蓝
+### 方式一：原生支持 Skills 的平台（推荐）
+
+| 平台 | 用户级（全局生效） | 项目级（随仓库共享） | 触发方式 |
+|---|---|---|---|
+| WorkBuddy | `~/.workbuddy/skills/` | `.workbuddy/skills/` | `@ai-non-recorder-text-summary …` 或自然语言 |
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` | 自动匹配，`/` 菜单点名 |
+| claude.ai | 设置 → 功能 → Skills 上传 zip（需付费计划） | — | 自动匹配 |
+| Cursor | `~/.cursor/skills/`（或 `~/.agents/skills/`） | `.cursor/skills/`（或 `.agents/skills/`） | `/name` 或 `@name` |
+| OpenAI Codex | `~/.agents/skills/` | `<仓库根>/.agents/skills/`（向上扫描） | `/skills` 或 `$name` |
+| DeepSeek Deep Code | `~/.agents/skills/` | `.deepcode/skills/` | `/` 技能选择器 |
+| DeepSeek Harness | `~/.dsh/skills/`（或 `~/.agents/skills/`） | `.dsh/skills/`（或 `.agents/skills/`） | `/name` 或 `@name` |
+
+```bash
+# 按平台拷一次即可，目录名保持不变
+cp -r ai-non-recorder-text-summary ~/.workbuddy/skills/   # WorkBuddy
+cp -r ai-non-recorder-text-summary ~/.claude/skills/     # Claude Code
+cp -r ai-non-recorder-text-summary ~/.agents/skills/     # Codex / Deep Code / Cursor
 ```
+
+### 方式二：没有 Skills 机制的平台
+
+把 `SKILL.md` 正文作为系统提示词或项目规则注入（`scripts/`、`references/` 需与 SKILL.md 保持同仓，相对路径可达）：
+
+| 平台 | 接入文件 |
+|---|---|
+| Windsurf | `.windsurf/rules/*.md` |
+| Cline | `.clinerules` |
+| Gemini CLI | `GEMINI.md` |
+| 通用标准 | 根目录 `AGENTS.md` |
+| 纯 API 调用 | system prompt 直接粘贴 SKILL.md 正文 |
 
 生成流程四步：**定主题色 → 套骨架（替换 `/*__THEME_TOKENS__*/` 占位符）→ 按 `references/pipeline.md` 契约填内容 → 过六项校验交付**。
 
