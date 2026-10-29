@@ -3,7 +3,7 @@
 """主题色令牌生成器 —— 「AI 录音笔式网页生成」skill 配套脚本。
 
 用法：
-    python3 theme_tokens.py                      # 输出默认预设（原始绿色系，与模板一致）
+    python3 theme_tokens.py                      # 输出默认预设（原始微信绿色系，与模板一致）
     python3 theme_tokens.py --accent "#2563eb"   # 由主题色派生整套设计令牌
     python3 theme_tokens.py --accent "#e63946" --dark-accent "#ff6b6b"
 
@@ -214,7 +214,7 @@ def main():
                 light["on-accent"],
                 "已按色相重生成" if args.tint_neutrals else "保持默认预设"))
     else:
-        sys.stderr.write("[theme_tokens] 未指定主题色，输出默认预设（原始绿色系）\n")
+        sys.stderr.write("[theme_tokens] 未指定主题色，输出默认预设（原始微信绿色系）\n")
 
 
 if __name__ == "__main__":
