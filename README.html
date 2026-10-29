@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 非录音笔文本总结</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --page-bg:#f2f4ee; --surface:#ffffff; --surface-2:#e9efe6;
+  --ink:#1d2721; --muted:#63726a; --line:#dde3d6;
+  --accent:#2563eb; --accent-ink:#1d4eba; --accent-soft:#e5ecfd;
+  --accent-line:#bed0f9; --on-accent:#ffffff; --warn-ink:#8a4f10;
+  --warn-bg:#f8eedb; --warn-line:#ead8b4;
+  --radius:16px;
+  --shadow:0 1px 2px rgba(23,34,27,.05),0 10px 30px rgba(23,34,27,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --page-bg:#0e1411; --surface:#182119; --surface-2:#202b22;
+    --ink:#e6ede7; --muted:#93a398; --line:#2a382d;
+    --accent:#7393da; --accent-ink:#9ab1e4; --accent-soft:#2a3849;
+    --accent-line:#364761; --on-accent:#ffffff; --warn-ink:#e5b273;
+    --warn-bg:#2c2314; --warn-line:#514020;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px rgba(0,0,0,.4);
+  }
+}
+
+/* ===== 移动端安全网（原样嵌入，禁止修改） ===== */
+*,*::before,*::after{box-sizing:border-box;}
+html{width:100%;min-width:0;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+body{width:100%;min-width:0;margin:0;overflow-wrap:break-word;}
+main,header,footer,nav,section,article,aside,figure,div,ul,ol,li,dl,dd,details{min-width:0;}
+img,picture,video,canvas,svg{display:block;max-width:100%;height:auto;}
+pre,code,kbd,samp{max-width:100%;overflow-wrap:anywhere;word-break:break-word;}
+h1,h2,h3,h4,h5,h6,p,li,td,th,dt,dd,blockquote,figcaption{overflow-wrap:anywhere;}
+input,textarea,select,button{max-width:100%;font:inherit;}
+.table-scroll,.table-wrap,.matrix-wrap,[data-table-scroll],[data-scroll-x]{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.step-item,[data-step-item]{grid-template-columns:32px minmax(0,1fr) !important;}
+.step-item::before,[data-step-item]::before{grid-column:1 !important;grid-row:1 !important;}
+.step-item>*,[data-step-item]>*{grid-column:2 !important;min-width:0 !important;}
+.data-value,.metric-value,[data-value]{max-width:100%;font-variant-numeric:tabular-nums;}
+[class*="grid"]>:only-child,[class*="board"]>:only-child,[class*="cluster"]>:only-child,
+[class*="row"]>:only-child,[class*="split"]>:only-child,[class*="cols"]>:only-child,
+[class*="columns"]>:only-child,[class*="layout"]>:only-child,[class*="panel"]>:only-child,
+[data-grid]>:only-child,[data-cols]>:only-child{grid-column:1/-1 !important;width:100% !important;}
+@media (max-width:600px){
+  body{font-size:14.5px !important;line-height:1.62 !important;}
+  h1{font-size:29px !important;line-height:1.22 !important;}
+  h2{font-size:22px !important;line-height:1.3 !important;}
+  h3{font-size:16px !important;line-height:1.42 !important;}
+  [class*="grid"]:not([data-keep-columns]),[class*="board"]:not([data-keep-columns]),
+  [class*="split"]:not([data-keep-columns]),[class*="cols"]:not([data-keep-columns]),
+  [class*="columns"]:not([data-keep-columns]),[class*="layout"]:not([data-keep-columns]),
+  [data-grid]:not([data-keep-columns]){grid-template-columns:minmax(0,1fr) !important;}
+  [data-keep-columns]{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+  [data-keep-columns]>:last-child:nth-child(odd){grid-column:1/-1 !important;}
+  [data-span-all],[data-value-kind="formula"],[data-value-kind="range"]{grid-column:1/-1 !important;}
+  [class*="flow"],[class*="chain"],[class*="timeline"]{flex-direction:column !important;}
+  [class*="arrow"]{transform:rotate(90deg);min-height:16px;}
+  table{font-size:12.5px;} th,td{padding:9px 8px !important;}
+  button,summary,[role="button"]{min-width:44px;min-height:44px;}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto !important;animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+}
+
+/* ===== 标准组件库（可按页增补，但禁止与安全网冲突） ===== */
+/* hero */
+.hero{margin:4px 0 8px;}
+.kicker{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--accent-ink);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:999px;padding:4px 13px;margin-bottom:16px;}
+.hero h1{font-size:33px;line-height:1.3;margin:0 0 14px;letter-spacing:-.01em;}
+.lede{font-size:16px;color:var(--muted);margin:0;}
+.hl{font-style:normal;font-weight:700;color:var(--accent-ink);background:linear-gradient(transparent 60%,var(--accent-soft) 60%);border-radius:2px;padding:0 1px;}
+
+/* 总览卡 */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:20px 0 4px;}
+.trio-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:13px 13px 12px;}
+.trio-card i{display:block;font-style:normal;font-size:19px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:7px;}
+.trio-card b{display:block;font-size:14px;margin-bottom:3px;}
+.trio-card span{display:block;font-size:12.5px;color:var(--muted);line-height:1.55;}
+
+/* 分区标题 */
+.part{display:flex;align-items:center;gap:12px;margin:36px 0 6px;}
+.part::after{content:"";flex:1;height:1px;background:var(--line);}
+.part span{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--accent-ink);white-space:nowrap;}
+
+/* 模块卡 */
+.mod{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin:14px 0;}
+.mod h2{font-size:20px;line-height:1.4;margin:2px 0 10px;}
+.mod p{margin:10px 0;}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--muted);}
+
+/* 金句框 */
+.keyline{margin:14px 0;padding:12px 16px;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;color:var(--accent-ink);font-weight:600;}
+.keyline::before{content:"金句";display:block;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--accent);margin-bottom:4px;}
+
+/* 洞察框 */
+.insight{display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:12px 14px;background:var(--surface-2);border:1px dashed var(--accent-line);border-radius:12px;font-size:14.5px;}
+.insight b{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--on-accent);background:var(--accent);border-radius:6px;padding:2px 8px;margin-top:2px;}
+.insight span{min-width:0;}
+
+/* 误区框 */
+.warnbox{margin:14px 0;padding:14px 16px;background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;}
+.warnbox .wt{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--warn-ink);margin-bottom:6px;}
+.warnbox p{margin:6px 0;}
+.warnbox .wn{font-size:14px;color:var(--muted);}
+.warnbox .wn b{color:var(--warn-ink);}
+
+/* 双栏价值卡 */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+.duo-card{border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:14px;padding:14px;}
+.duo-card b{display:block;font-size:14.5px;color:var(--accent-ink);margin-bottom:5px;}
+.duo-card p{margin:0;font-size:13.5px;}
+
+/* 图表 */
+.fig{margin:18px 0;}
+.fig svg{width:100%;height:auto;}
+.fig figcaption{font-size:12.5px;color:var(--muted);margin-top:9px;text-align:center;line-height:1.6;}
+
+/* 对比双栏 */
+.vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.lane{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--surface-2);display:flex;flex-direction:column;}
+.lane h3{margin:0 0 2px;font-size:14.5px;}
+.lane .lt{font-size:12px;color:var(--muted);margin-bottom:10px;}
+.lane-once{border-style:dashed;}
+.lane-sub{border-color:var(--accent-line);background:var(--accent-soft);}
+.fnode{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;text-align:center;line-height:1.55;}
+.fnode.loop{border:1px solid var(--accent);color:var(--accent-ink);font-weight:700;}
+.fconn{height:16px;background-image:repeating-linear-gradient(180deg,var(--accent) 0 3px,transparent 3px 9px);background-size:100% 9px;animation:marchY .9s linear infinite;}
+.lane-once .fconn{background-image:repeating-linear-gradient(180deg,var(--muted) 0 3px,transparent 3px 9px);opacity:.45;}
+.lane-foot{margin-top:auto;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--muted);}
+.lane-sub .lane-foot{color:var(--accent-ink);font-weight:600;}
+.price{display:inline-block;font-size:13px;font-weight:800;color:var(--on-accent);background:var(--accent);border-radius:999px;padding:1px 9px;line-height:1.6;}
+.badge{display:inline-block;font-size:11px;font-weight:700;color:var(--accent-ink);background:var(--surface);border:1px solid var(--accent-line);border-radius:999px;padding:0 8px;line-height:1.7;vertical-align:1px;}
+@keyframes marchY{from{background-position:0 0;}to{background-position:0 9px;}}
+
+/* 对照矩阵 */
+.payboard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.pb-col{border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:14px;}
+.pb-yes{border-color:var(--accent-line);background:var(--accent-soft);}
+.pb-col h4{margin:0 0 4px;font-size:14px;}
+.pb-no h4{color:var(--warn-ink);}
+.pb-yes h4{color:var(--accent-ink);}
+.pb-item{display:flex;gap:8px;padding:8px 0;border-top:1px dashed var(--line);font-size:13px;line-height:1.6;}
+.pb-item:first-of-type{border-top:none;}
+.pb-item .mk{flex:0 0 auto;font-weight:800;}
+.pb-no .mk{color:var(--warn-ink);}
+.pb-yes .mk{color:var(--accent);}
+.pb-no s{color:var(--muted);}
+
+/* 分工图 */
+.dv-chain{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:stretch;}
+.dv-box,.dv-you{border-radius:14px;padding:14px;}
+.dv-box{border:1px solid var(--line);background:var(--surface-2);}
+.dv-you{border:1px solid var(--accent-line);background:var(--accent-soft);}
+.dv-box h4,.dv-you h4{margin:0 0 8px;font-size:14px;}
+.dv-you h4{color:var(--accent-ink);}
+.dv-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.dv-chips span{font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;}
+.dv-you .dv-chips span{color:var(--accent-ink);border-color:var(--accent-line);}
+.dv-join{align-self:center;font-size:20px;font-weight:800;color:var(--accent);}
+.dv-down{text-align:center;font-size:18px;font-weight:800;color:var(--accent);margin:8px 0;line-height:1;}
+.dv-out{background:var(--accent);color:var(--on-accent);border-radius:14px;padding:13px;text-align:center;font-weight:700;font-size:15px;}
+
+/* 行动清单 */
+.hair{border:none;border-top:1px solid var(--line);margin:30px 0 4px;}
+.steps-label{font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--muted);margin:14px 0 6px;}
+ol.steps{list-style:none;margin:0;padding:0;}
+ol.steps li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:start;padding:13px 0;border-bottom:1px dashed var(--line);}
+ol.steps li:last-child{border-bottom:none;padding-bottom:0;}
+ol.steps li i{font-style:normal;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:13.5px;font-weight:800;margin-top:2px;}
+ol.steps li b{font-size:15px;}
+ol.steps li p{margin:2px 0 0;font-size:14px;color:var(--muted);}
+
+/* 收束金句 */
+.creed{text-align:center;font-size:18px;font-weight:800;line-height:1.7;color:var(--accent-ink);margin:34px 0 8px;}
+
+/* 预告 */
+.teaser{border:1px dashed var(--accent-line);background:var(--accent-soft);}
+.teaser .tt{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--accent-ink);margin-bottom:6px;}
+.teaser h2{color:var(--accent-ink);}
+.teaser p{margin:6px 0 0;}
+
+/* 落款 */
+.signoff{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;margin-top:30px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);}
+.signoff b{color:var(--ink);}
+
+/* 入场动效 */
+.rv{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease;}
+.rv.in{opacity:1;transform:none;}
+
+/* SVG 图示类 */
+.arena{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:6 7;}
+.lk-dash path{fill:none;stroke:var(--accent);stroke-width:1.8;stroke-dasharray:5 6;animation:dashMove 2.8s linear infinite;}
+@keyframes dashMove{to{stroke-dashoffset:-22;}}
+.mem{fill:var(--surface);stroke:var(--accent-line);stroke-width:1.5;}
+.mem-t{fill:var(--muted);font-size:10.5px;font-weight:600;}
+.host{fill:var(--accent);}
+.host-t{fill:var(--on-accent);font-size:12px;font-weight:600;}
+.host-b{fill:var(--on-accent);font-size:17px;font-weight:800;}
+.pill-bg{fill:var(--accent-soft);stroke:var(--accent-line);stroke-width:1;}
+.pill-t{fill:var(--accent-ink);font-size:12px;font-weight:600;}
+.t-mut{fill:var(--muted);font-size:12px;}
+.t-ink{fill:var(--ink);font-size:12.5px;font-weight:600;}
+.t-on{fill:var(--ink);font-size:13px;font-weight:600;}
+.arr-ok{fill:var(--accent);}
+
+/* 自定义布局窄屏折叠 */
+@media (max-width:600px){
+  .trio{grid-template-columns:minmax(0,1fr);}
+  .vs{grid-template-columns:minmax(0,1fr);}
+  .duo{grid-template-columns:minmax(0,1fr);}
+  .dv-chain{grid-template-columns:minmax(0,1fr);}
+  .dv-join{text-align:center;}
+  .creed{font-size:16.5px;}
+}
+
+/* ===== 本页增补组件 ===== */
+.nd{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5;}
+.nd-t{fill:var(--ink);font-size:14px;font-weight:700;}
+.nd-ti{fill:var(--accent-ink);font-size:14px;font-weight:700;}
+.nd-s{fill:var(--muted);font-size:11.5px;}
+.nd-soft{fill:var(--accent-soft);stroke:var(--accent-line);stroke-width:1.5;}
+.nd-main{fill:var(--accent);}
+.nd-on{fill:var(--on-accent);font-size:14px;font-weight:700;}
+.nd-on-s{fill:var(--on-accent);font-size:11px;}
+.chip-bg{fill:var(--surface);stroke:var(--accent-line);stroke-width:1;}
+.chip-t{fill:var(--accent-ink);font-size:12px;font-weight:600;}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;font-size:.9em;}
+.sw{display:inline-block;width:13px;height:13px;border-radius:4px;border:1px solid var(--line);vertical-align:-2px;margin-right:7px;}
+.code{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13px;margin:10px 0;}
+.tree{margin:6px 0;}
+.tree-row{display:flex;gap:9px;align-items:baseline;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px;}
+.tree-row:last-child{border-bottom:none;}
+.tree-glyph{color:var(--accent);font-weight:700;flex:0 0 auto;}
+.tree-name{font-weight:700;flex:0 0 auto;}
+.tree-desc{color:var(--muted);font-size:12.5px;min-width:0;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <span class="kicker">WorkBuddy Skill · 使用说明</span>
+  <h1>AI 非录音笔文本总结</h1>
+  <p class="lede">把录音转写、课程讲稿、口播文案，直接变成<em class="hl">单文件 HTML 总结网页</em>：零外部依赖、明暗双主题、移动端安全网内置。支持<em class="hl">自定义主题色</em>，不指定则默认原始绿色系。本页由该 skill 以<em class="hl">科技蓝 #2563eb</em>生成，即效果预览。</p>
+</header>
+
+<div class="trio">
+  <div class="trio-card rv"><i>01</i><b>theme_tokens.py</b><span>主题色脚本：一个 accent 派生明暗双套设计令牌</span></div>
+  <div class="trio-card rv"><i>02</i><b>base-template.html</b><span>页面骨架：安全网 + 组件库 + 动效脚本，唯一占位符</span></div>
+  <div class="trio-card rv"><i>03</i><b>pipeline.md</b><span>管线契约：页面结构、组件规范、图表元数据、内容规则</span></div>
+</div>
+
+<div class="part rv"><span>第一部分 · 它解决什么问题</span></div>
+
+<section class="mod rv">
+  <div class="eyebrow">定位</div>
+  <h2>从口语转写，到一读即懂的网页</h2>
+  <p>传统 AI 总结输出 Markdown 或纯文本，阅读成本高、分享体验差。本 skill 让模型直接输出完整 HTML 页面：结构契约固定、色板令牌化、移动端安全网兜底，任何产出版式统一，可直接 iframe 嵌入分享。</p>
+  <p>三个硬保证：<strong>零外部依赖</strong>（无 CDN、无外链字体与图片，图形全部内联 SVG/CSS 绘制）；<strong>760px 居中</strong>，任何窄屏不出现横向滚动；<strong>明色 / 暗色 / ≤600px 窄屏 / 减少动效</strong>四类适配默认全覆盖。</p>
+  <figure class="fig" data-visual-id="pipeline-io"
+          data-visual-title="管线输入输出示意图"
+          data-visual-type="关系示意图"
+          data-visual-relation="左侧口语转写文本经中部三件套管线处理，向右产出统一版式的单文件网页"
+          data-visual-source="SKILL.md 与 pipeline.md：结构契约固定、色板令牌化、移动端安全网兜底、零外部依赖、760px 居中">
+    <svg viewBox="0 0 680 230" role="img" aria-label="管线输入输出示意图：口语转写文本经过主题令牌、移动端安全网、结构契约三件套，产出单文件 HTML 网页">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 Z" class="arr-ok"/>
+        </marker>
+      </defs>
+      <rect class="arena" x="6" y="6" width="668" height="218" rx="20"/>
+      <g class="lk-dash">
+        <path d="M196 115 L256 115" marker-end="url(#arr2)"/>
+        <path d="M424 115 L484 115" marker-end="url(#arr2)"/>
+      </g>
+      <rect class="nd" x="36" y="72" width="160" height="86" rx="14"/>
+      <text class="nd-t" x="116" y="108" text-anchor="middle">口语转写文本</text>
+      <text class="nd-s" x="116" y="131" text-anchor="middle">课程 · 口播 · 会议</text>
+      <rect class="nd-soft" x="258" y="44" width="164" height="142" rx="14"/>
+      <text class="nd-ti" x="340" y="70" text-anchor="middle">Skill 管线</text>
+      <rect class="chip-bg" x="280" y="82" width="120" height="24" rx="12"/>
+      <text class="chip-t" x="340" y="98" text-anchor="middle">主题令牌</text>
+      <rect class="chip-bg" x="280" y="112" width="120" height="24" rx="12"/>
+      <text class="chip-t" x="340" y="128" text-anchor="middle">移动端安全网</text>
+      <rect class="chip-bg" x="280" y="142" width="120" height="24" rx="12"/>
+      <text class="chip-t" x="340" y="158" text-anchor="middle">结构契约</text>
+      <rect class="nd-main" x="484" y="72" width="160" height="86" rx="14"/>
+      <text class="nd-on" x="564" y="108" text-anchor="middle">单文件 HTML</text>
+      <text class="nd-on-s" x="564" y="131" text-anchor="middle">零外部依赖 · 可嵌入分享</text>
+      <text class="nd-s" x="226" y="102" text-anchor="middle">输入</text>
+      <text class="nd-s" x="454" y="102" text-anchor="middle">产出</text>
+      <text class="nd-s" x="340" y="210" text-anchor="middle">任何产出版式统一 · 760px 居中 · 明暗双主题</text>
+    </svg>
+    <figcaption>图 1 · 管线输入输出：口语转写经三件套处理，产出统一版式的单文件总结网页。</figcaption>
+  </figure>
+  <div class="keyline">未指定主题色时，一律使用默认预设（原始绿色系），不要询问、不要发明新配色。</div>
+  <div class="insight"><b>洞察</b><span>管线的核心是解耦：版式稳定性交给固定 CSS 契约（安全网 + 组件库），内容创作交给模型，颜色交给一个参数。换主题只换令牌块，内容与结构不动。</span></div>
+</section>
+
+<div class="part rv"><span>第二部分 · 主题色系统</span></div>
+
+<section class="mod rv">
+  <div class="eyebrow">核心扩展</div>
+  <h2>一个色，派生一整套令牌</h2>
+  <p>用户给颜色名（"科技感一点"）、十六进制（"#2563eb"）或场景词均可，脚本按固定规则派生明暗两套令牌，<strong>禁止手推色值</strong>。常用映射：科技感 = 蓝、暖色 = 橙红、金融 = 金、自然 = 绿。</p>
+  <figure class="fig" data-visual-id="blue-palette"
+          data-visual-title="科技蓝主题：明暗两套派生令牌"
+          data-visual-type="对照矩阵"
+          data-visual-relation="同一主题色 #2563eb 在明色与暗色下各派生出一套 accent 家族令牌，左右对照展示"
+          data-visual-source="theme_tokens.py --accent #2563eb 的实际输出：明色 accent #2563eb、暗色 accent #7393da，on-accent 明暗均为 #ffffff">
+    <div class="payboard">
+      <div class="pb-col">
+        <h4>明色主题</h4>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#2563eb"></span>accent <code>#2563eb</code>（指定色）</span></div>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#1d4eba"></span>accent-ink <code>#1d4eba</code>（加深 21%）</span></div>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#e5ecfd"></span>accent-soft <code>#e5ecfd</code>（混白 88%）</span></div>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#bed0f9"></span>accent-line <code>#bed0f9</code>（混白 70%）</span></div>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#ffffff"></span>on-accent <code>#ffffff</code>（亮度判定）</span></div>
+      </div>
+      <div class="pb-col pb-yes">
+        <h4>暗色主题</h4>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#7393da"></span>accent <code>#7393da</code>（同色相提亮）</span></div>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#9ab1e4"></span>accent-ink <code>#9ab1e4</code>（混白 28%）</span></div>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#2a3849"></span>accent-soft <code>#2a3849</code>（混底色 72%）</span></div>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#364761"></span>accent-line <code>#364761</code>（混底色 60%）</span></div>
+        <div class="pb-item"><span class="mk">●</span><span><span class="sw" style="background:#ffffff"></span>on-accent <code>#ffffff</code>（亮度判定）</span></div>
+      </div>
+    </div>
+    <figcaption>图 2 · 科技蓝派生结果：本页所有强调色均来自这两套令牌，未写死一个色值。</figcaption>
+  </figure>
+  <div class="keyline">换主题只需重跑脚本、替换令牌块，内容不动。</div>
+  <div class="insight"><b>洞察</b><span>on-accent 按亮度自动切深/浅文字，亮色主题不会出现低对比度白字；warn 警示家族是语义色，不随主题变化。</span></div>
+</section>
+
+<div class="part rv"><span>第三部分 · 文件结构与使用</span></div>
+
+<section class="mod rv">
+  <div class="eyebrow">仓库结构</div>
+  <h2>几个文件，各司其职</h2>
+  <figure class="fig" data-visual-id="repo-tree"
+          data-visual-title="Skill 仓库文件结构"
+          data-visual-type="结构图"
+          data-visual-relation="根目录下文档、脚本、参考、资产四类文件并列，README 两版分别面向 GitHub 渲染与浏览器预览"
+          data-visual-source="仓库实际文件：SKILL.md、README.md、README.html、scripts/theme_tokens.py、references/pipeline.md、assets/base-template.html、assets/cover.svg">
+    <div class="tree">
+      <div class="tree-row"><span class="tree-glyph">▸</span><span class="tree-name">SKILL.md</span><span class="tree-desc">入口：触发词、四步工作流、主题色速查表</span></div>
+      <div class="tree-row"><span class="tree-glyph">▸</span><span class="tree-name">README.md</span><span class="tree-desc">GitHub 渲染版说明（本文件）</span></div>
+      <div class="tree-row"><span class="tree-glyph">▸</span><span class="tree-name">README.html</span><span class="tree-desc">可视化说明页：科技蓝主题，由本 skill 生成</span></div>
+      <div class="tree-row"><span class="tree-glyph">▸</span><span class="tree-name">scripts/theme_tokens.py</span><span class="tree-desc">主题色令牌生成器（默认预设 / 派生 / JSON）</span></div>
+      <div class="tree-row"><span class="tree-glyph">▸</span><span class="tree-name">references/pipeline.md</span><span class="tree-desc">完整管线契约与派生规则表</span></div>
+      <div class="tree-row"><span class="tree-glyph">▸</span><span class="tree-name">assets/base-template.html</span><span class="tree-desc">页面骨架：安全网 + 组件库 + 动效脚本</span></div>
+      <div class="tree-row"><span class="tree-glyph">▸</span><span class="tree-name">assets/cover.svg</span><span class="tree-desc">512×512 分享封面（科技蓝）</span></div>
+    </div>
+    <figcaption>图 3 · 仓库结构：文档两版并存，脚本与资产支撑生成流程。</figcaption>
+  </figure>
+</section>
+
+<section class="mod rv">
+  <div class="eyebrow">安装与触发</div>
+  <h2>拷入目录，对话即用</h2>
+  <p>拷贝到用户级 skills 目录即可被 WorkBuddy 识别：</p>
+  <pre class="code"><code>cp -r ai-non-recorder-text-summary ~/.workbuddy/skills/</code></pre>
+  <p>在对话中直接提需求，或显式点名 skill：</p>
+  <pre class="code"><code>@ai-non-recorder-text-summary 把这段录音转写生成总结网页，用科技蓝</code></pre>
+  <div class="warnbox">
+    <div class="wt">两条红线</div>
+    <p>安全网 CSS 禁止改动一个字符；主题色必须走 theme_tokens.py，禁止手推色值。</p>
+    <p class="wn">违反任一条即破版或失真——安全网是窄屏不横向滚动的唯一保障。</p>
+  </div>
+</section>
+
+<hr class="hair">
+<div class="steps-label">生成一页的四步清单</div>
+<ol class="steps">
+  <li><i>1</i><div><b>定主题色</b><p>有指定跑脚本派生，无指定用默认绿色系，不询问。</p></div></li>
+  <li><i>2</i><div><b>套骨架</b><p>复制 base-template.html，用脚本输出替换 /*__THEME_TOKENS__*/ 占位符。</p></div></li>
+  <li><i>3</i><div><b>填内容</b><p>按 pipeline.md 契约写 hero、分区、模块、图表与落款。</p></div></li>
+  <li><i>4</i><div><b>过校验</b><p>六项检查全过再交付，每张图带全 5 个 data-visual-* 属性。</p></div></li>
+</ol>
+
+<p class="creed">把版式交给契约，把创作交给模型，把颜色交给一个参数。</p>
+
+<footer class="signoff">
+  <span>AI 非录音笔文本总结 · v1.0</span>
+  <span>本页由该 skill 以科技蓝 #2563eb 生成</span>
+</footer>
+</div>
+
+<script>
+(function(){
+  if(!('IntersectionObserver' in window)) return;
+  var els=[].slice.call(document.querySelectorAll('.rv'));
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+    });
+  },{threshold:.06,rootMargin:'0px 0px -4% 0px'});
+  els.forEach(function(el){io.observe(el);});
+})();
+</script>
+<script>
+(function(){
+  var RESIZE='app:resize';
+  function measure(){
+    var h=Math.ceil(Math.max(document.body.scrollHeight,document.documentElement.offsetHeight));
+    var bg=getComputedStyle(document.body).backgroundColor;
+    window.parent.postMessage({type:RESIZE,height:h,backgroundColor:bg},'*');
+  }
+  window.addEventListener('load',measure);
+  if('ResizeObserver' in window){new ResizeObserver(measure).observe(document.body);}
+  setInterval(measure,1000);
+})();
+</script>
+<noscript><style>.rv{opacity:1;transform:none}</style></noscript>
+</body>
+</html>
