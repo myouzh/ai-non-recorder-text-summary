@@ -67,6 +67,9 @@ input,textarea,select,button{max-width:100%;font:inherit;}
 }
 
 /* ===== 标准组件库（可按页增补，但禁止与安全网冲突） ===== */
+/* 页面容器：600px 窄栏居中（参考微信录音笔分享页：固定窄宽度 + 两侧留白），桌面透出空间、移动端保留 18px 安全边距 */
+.page{max-width:600px;margin:0 auto;padding:28px 18px 56px;}
+
 /* hero */
 .hero{margin:4px 0 8px;}
 .kicker{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--accent-ink);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:999px;padding:4px 13px;margin-bottom:16px;}
@@ -243,7 +246,6 @@ table.pt th{text-align:left;font-size:12px;font-weight:700;letter-spacing:.06em;
 table.pt td{padding:9px 10px;border-bottom:1px dashed var(--line);vertical-align:top;line-height:1.6;}
 table.pt tbody tr:last-child td{border-bottom:none;}
 table.pt td b{font-size:13.5px;}
-table.pt td code{white-space:nowrap;}
 .src-note{margin:16px auto 0;max-width:600px;font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:9px 14px;text-align:center;line-height:1.6;}
 </style>
 </head>
@@ -269,12 +271,12 @@ table.pt td code{white-space:nowrap;}
   <div class="eyebrow">定位</div>
   <h2>从口语转写，到一读即懂的网页</h2>
   <p>传统 AI 总结输出 Markdown 或纯文本，阅读成本高、分享体验差。本 skill 让模型直接输出完整 HTML 页面：结构契约固定、色板令牌化、移动端安全网兜底，任何产出版式统一，可直接 iframe 嵌入分享。</p>
-  <p>三个硬保证：<strong>零外部依赖</strong>（无 CDN、无外链字体与图片，图形全部内联 SVG/CSS 绘制）；<strong>760px 居中</strong>，任何窄屏不出现横向滚动；<strong>明色 / 暗色 / ≤600px 窄屏 / 减少动效</strong>四类适配默认全覆盖。</p>
+  <p>三个硬保证：<strong>零外部依赖</strong>（无 CDN、无外链字体与图片，图形全部内联 SVG/CSS 绘制）；<strong>600px 窄栏居中</strong>，任何窄屏不出现横向滚动；<strong>明色 / 暗色 / ≤600px 窄屏 / 减少动效</strong>四类适配默认全覆盖。</p>
   <figure class="fig" data-visual-id="pipeline-io"
           data-visual-title="管线输入输出示意图"
           data-visual-type="关系示意图"
           data-visual-relation="左侧口语转写文本经中部三件套管线处理，向右产出统一版式的单文件网页"
-          data-visual-source="SKILL.md 与 pipeline.md：结构契约固定、色板令牌化、移动端安全网兜底、零外部依赖、760px 居中">
+          data-visual-source="SKILL.md 与 pipeline.md：结构契约固定、色板令牌化、移动端安全网兜底、零外部依赖、600px 窄栏居中">
     <svg viewBox="0 0 680 230" role="img" aria-label="管线输入输出示意图：口语转写文本经过主题令牌、移动端安全网、结构契约三件套，产出单文件 HTML 网页">
       <defs>
         <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
@@ -302,7 +304,7 @@ table.pt td code{white-space:nowrap;}
       <text class="nd-on-s" x="564" y="131" text-anchor="middle">零外部依赖 · 可嵌入分享</text>
       <text class="nd-s" x="226" y="102" text-anchor="middle">输入</text>
       <text class="nd-s" x="454" y="102" text-anchor="middle">产出</text>
-      <text class="nd-s" x="340" y="210" text-anchor="middle">任何产出版式统一 · 760px 居中 · 明暗双主题</text>
+      <text class="nd-s" x="340" y="210" text-anchor="middle">任何产出版式统一 · 600px 窄栏居中 · 明暗双主题</text>
     </svg>
     <figcaption>图 1 · 管线输入输出：口语转写经三件套处理，产出统一版式的单文件总结网页。</figcaption>
   </figure>
