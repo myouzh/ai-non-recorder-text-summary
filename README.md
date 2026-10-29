@@ -2,9 +2,9 @@
 
 <div align="center">
 
-# AI 非录音笔文本总结
+# AI 非录音笔 · 结构化视觉生成器
 
-**把录音转写、课程讲稿、口播文案，变成单文件 HTML 总结网页的 Agent Skill（多平台通用）**
+**借鉴微信的「AI 录音笔」模式，将录音转写、课程讲稿、口播文案等非结构化口述，梳理、分析、重构为符合大脑习惯记忆的结构化表达 HTML 网页——零外网依赖、自包含、可嵌入分享，主题色随需定制。**
 
 ![type](https://img.shields.io/badge/type-Agent%20Skill-2563eb)
 ![platforms](https://img.shields.io/badge/platforms-WorkBuddy%20%7C%20Claude%20%7C%20Cursor%20%7C%20Codex%20%7C%20DeepSeek-2563eb)
