@@ -48,8 +48,10 @@ input,textarea,select,button{max-width:100%;font:inherit;}
 }
 
 /* ===== 标准组件库（可按页增补，但禁止与安全网冲突） ===== */
-/* 页面容器：600px 窄栏居中（参考微信录音笔分享页：固定窄宽度 + 两侧留白），桌面透出空间、移动端保留 18px 安全边距 */
-.page{max-width:600px;margin:0 auto;padding:28px 18px 56px;}
+/* 页面容器：640px 窄栏居中（参考微信录音笔分享页：固定窄宽度 + 两侧留白），桌面透出空间、移动端保留 18px 安全边距 */
+.page{max-width:640px;margin:0 auto;padding:28px 18px 56px;}
+/* 代码块：pre 默认 white-space:pre 不换行，长命令行会溢出卡片；允许换行 + 超长 token 断开 */
+pre{white-space:pre-wrap;word-break:break-word;}
 
 /* hero */
 .hero{margin:4px 0 8px;}

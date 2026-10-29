@@ -60,7 +60,7 @@ warn 家族（琥珀警示色）为语义色，不随主题色变化。
 4. JS 只允许原生 JS，禁止任何框架；禁止 alert/confirm/prompt；禁止 fixed 定位（页面将被 iframe 嵌入）
 5. 移动端安全网 CSS 必须原样嵌入（已包含在 `assets/base-template.html` 中，直接复制使用，禁止改动其中任何色值与选择器）
 6. 必须同时适配：明色/暗色（prefers-color-scheme）、移动端窄屏（≤600px）、减少动效（prefers-reduced-motion）
-7. 页面最大宽度 600px 窄栏居中（`.page{max-width:600px;margin:0 auto;padding:28px 18px 56px;}`，已内置在 base-template.html）：桌面两侧留白、移动端保留 18px 安全边距；任何情况下不得出现横向滚动
+7. 页面最大宽度 640px 窄栏居中（`.page{max-width:640px;margin:0 auto;padding:28px 18px 56px;}`，已内置在 base-template.html）：桌面两侧留白、移动端保留 18px 安全边距；代码块 pre 已内置 pre-wrap 换行规则，长命令行不得溢出卡片；任何情况下不得出现横向滚动
 
 ---
 

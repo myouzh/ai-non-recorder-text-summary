@@ -21,7 +21,7 @@
 三个硬保证：
 
 - **零外部依赖** — 无 CDN、无外链字体与图片，图形全部内联 SVG/CSS 绘制
-- **600px 窄栏居中** — 桌面两侧留白，任何窄屏不出现横向滚动
+- **640px 窄栏居中** — 桌面两侧留白，任何窄屏不出现横向滚动
 - **四类适配全覆盖** — 明色 / 暗色（`prefers-color-scheme`）、≤600px 窄屏、减少动效（`prefers-reduced-motion`）
 
 ## 主题色（核心扩展）
@@ -69,9 +69,9 @@ python3 scripts/theme_tokens.py --json               # JSON 输出
 
 ```bash
 # 按平台拷一次即可，目录名保持不变
-cp -r ai-non-recorder-text-summary ~/.workbuddy/skills/   # WorkBuddy
-cp -r ai-non-recorder-text-summary ~/.claude/skills/     # Claude Code
-cp -r ai-non-recorder-text-summary ~/.agents/skills/     # Codex / Deep Code / Cursor
+cp -r ai-non-recorder-text-summary ~/.workbuddy/skills/
+cp -r ai-non-recorder-text-summary ~/.claude/skills/
+cp -r ai-non-recorder-text-summary ~/.agents/skills/
 ```
 
 ### 方式二：没有 Skills 机制的平台
