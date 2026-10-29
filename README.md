@@ -6,13 +6,15 @@
 
 **借鉴微信的「AI 录音笔」模式，将录音转写、课程讲稿、口播文案等非结构化口述，梳理、分析、重构为符合大脑习惯记忆的结构化表达 HTML 网页——零外网依赖、自包含、可嵌入分享，主题色随需定制。**
 
-![type](https://img.shields.io/badge/type-Agent%20Skill-2563eb)
-![platforms](https://img.shields.io/badge/platforms-WorkBuddy%20%7C%20Claude%20%7C%20Cursor%20%7C%20Codex%20%7C%20DeepSeek-2563eb)
-![deps](https://img.shields.io/badge/dependencies-0-2563eb)
-![theme](https://img.shields.io/badge/default%20theme-tech--blue%20%232563eb-2563eb)
-![version](https://img.shields.io/badge/version-1.0.0-2563eb)
+![type](https://img.shields.io/badge/type-Agent%20Skill-0e7c56)
+![platforms](https://img.shields.io/badge/platforms-WorkBuddy%20%7C%20Claude%20%7C%20Cursor%20%7C%20Codex%20%7C%20DeepSeek-0e7c56)
+![deps](https://img.shields.io/badge/dependencies-0-0e7c56)
+![theme](https://img.shields.io/badge/default%20theme-wechat--green%20%230e7c56-0e7c56)
+![version](https://img.shields.io/badge/version-1.0.0-0e7c56)
 
 </div>
+
+**目录**：[它做什么](#它做什么) · [主题色](#主题色核心扩展) · [快速开始](#快速开始) · [文件结构](#文件结构) · [可视化说明](#可视化说明) · [质量校验清单](#质量校验清单)
 
 ## 它做什么
 

@@ -223,6 +223,10 @@ ol.steps li p{margin:2px 0 0;font-size:14px;color:var(--muted);}
 }
 
 /* ===== 本页增补组件 ===== */
+html{scroll-behavior:smooth;}
+.sect-nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 4px;}
+.sect-nav a{font-size:13px;font-weight:600;color:var(--accent-ink);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:999px;padding:5px 14px;text-decoration:none;transition:background .2s ease,color .2s ease;}
+.sect-nav a:hover,.sect-nav a:focus-visible{background:var(--accent);color:var(--on-accent);}
 .nd{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5;}
 .nd-t{fill:var(--ink);font-size:14px;font-weight:700;}
 .nd-ti{fill:var(--accent-ink);font-size:14px;font-weight:700;}
@@ -259,6 +263,12 @@ table.pt td b{font-size:13.5px;}
   <h1>AI 非录音笔 · 结构化视觉生成器</h1>
   <p class="lede">借鉴微信的「AI 录音笔」模式，将录音转写、课程讲稿、口播文案等非结构化口述，梳理、分析、重构为符合大脑习惯记忆的<em class="hl">结构化表达 HTML 网页</em>——<em class="hl">零外网依赖</em>、自包含、可嵌入分享，主题色随需定制。一份目录可在 <em class="hl">WorkBuddy / Claude / Cursor / Codex / DeepSeek</em> 多平台安装。本页由该 skill 以<em class="hl">科技蓝 #2563eb</em>生成，即效果预览。</p>
   <p class="src-note">声明：此 skill 是基于对微信 AI 录音笔进行反编译分析后编写的，仅供学习参考之用。</p>
+  <nav class="sect-nav rv">
+    <a href="#sec-what">它做什么</a>
+    <a href="#sec-theme">主题色</a>
+    <a href="#sec-files">文件结构</a>
+    <a href="#sec-install">快速开始</a>
+  </nav>
 </header>
 
 <div class="trio">
@@ -267,7 +277,7 @@ table.pt td b{font-size:13.5px;}
   <div class="trio-card rv"><i>03</i><b>pipeline.md</b><span>管线契约：页面结构、组件规范、图表元数据、内容规则</span></div>
 </div>
 
-<div class="part rv"><span>第一部分 · 它解决什么问题</span></div>
+<div class="part rv" id="sec-what"><span>第一部分 · 它解决什么问题</span></div>
 
 <section class="mod rv">
   <div class="eyebrow">定位</div>
@@ -314,7 +324,7 @@ table.pt td b{font-size:13.5px;}
   <div class="insight"><b>洞察</b><span>管线的核心是解耦：版式稳定性交给固定 CSS 契约（安全网 + 组件库），内容创作交给模型，颜色交给一个参数。换主题只换令牌块，内容与结构不动。</span></div>
 </section>
 
-<div class="part rv"><span>第二部分 · 主题色系统</span></div>
+<div class="part rv" id="sec-theme"><span>第二部分 · 主题色系统</span></div>
 
 <section class="mod rv">
   <div class="eyebrow">核心扩展</div>
@@ -349,7 +359,7 @@ table.pt td b{font-size:13.5px;}
   <div class="insight"><b>洞察</b><span>on-accent 按亮度自动切深/浅文字，亮色主题不会出现低对比度白字；warn 警示家族是语义色，不随主题变化。</span></div>
 </section>
 
-<div class="part rv"><span>第三部分 · 文件结构</span></div>
+<div class="part rv" id="sec-files"><span>第三部分 · 文件结构</span></div>
 
 <section class="mod rv">
   <div class="eyebrow">仓库结构</div>
@@ -372,7 +382,7 @@ table.pt td b{font-size:13.5px;}
   </figure>
 </section>
 
-<div class="part rv"><span>第四部分 · 安装与触发</span></div>
+<div class="part rv" id="sec-install"><span>第四部分 · 安装与触发</span></div>
 
 <section class="mod rv">
   <div class="eyebrow">多平台安装</div>
