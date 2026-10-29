@@ -108,7 +108,11 @@ ai-non-recorder-text-summary/
 
 ## 可视化说明
 
-**[README.html](README.html)** 由本 skill 自己生成：主题色科技蓝 `#2563eb`，包含管线输入输出示意图、明暗令牌对照矩阵、仓库结构图——既是文档，也是效果预览。直接用浏览器打开即可。
+**[README.html](README.html)** 由本 skill 自己生成：主题色科技蓝 `#2563eb`，包含管线输入输出示意图、明暗令牌对照矩阵、仓库结构图、多平台安装流程图——既是文档，也是效果预览。已通过 GitHub Pages 部署，点击即看：
+
+**[在线预览 → https://myouzh.github.io/ai-non-recorder-text-summary/README.html](https://myouzh.github.io/ai-non-recorder-text-summary/README.html)**
+
+（仓库中的 `.html` 文件在 GitHub 上默认只显示源码，在线版由 Pages 直接渲染；也可以下载到本地用浏览器打开。）
 
 ## 质量校验清单
 
