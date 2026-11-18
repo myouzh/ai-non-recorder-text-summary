@@ -13,7 +13,8 @@
       accent-line / on-accent，明暗两套）由该色按固定规则派生；
       中性色（page-bg / surface / ink / muted / line 等）默认保持默认预设，
       除非显式用 --tint-neutrals 按主题色相重新生成。
-    - warn 家族为语义警示色，不随主题色变化。
+    - warn / ok / risk 家族为语义色（警示/成功/风险），不随主题色变化，
+      供交互组件（勾选清单、二选一反馈）使用。
 
 输出为一段可直接粘贴进 <style> 的 CSS（含 :root 与暗色 media query）。
 """
@@ -29,6 +30,8 @@ DEFAULT_LIGHT = {
     "ink": "#1d2721", "muted": "#63726a", "line": "#dde3d6",
     "accent": "#0e7c56", "accent-ink": "#0b6244", "accent-soft": "#e2f0e8",
     "accent-line": "#b9d8c6", "on-accent": "#ffffff",
+    "ok-ink": "#1c5c3f", "ok-bg": "#e0f2e8", "ok-line": "#bfe0ce",
+    "risk-ink": "#a3342d", "risk-bg": "#fbe9e6", "risk-line": "#f0c9c4",
     "warn-ink": "#8a4f10", "warn-bg": "#f8eedb", "warn-line": "#ead8b4",
 }
 DEFAULT_DARK = {
@@ -36,11 +39,15 @@ DEFAULT_DARK = {
     "ink": "#e6ede7", "muted": "#93a398", "line": "#2a382d",
     "accent": "#43c48d", "accent-ink": "#7cd9af", "accent-soft": "#17352a",
     "accent-line": "#2e5c45", "on-accent": "#082015",
+    "ok-ink": "#7cd9af", "ok-bg": "#17352a", "ok-line": "#2e5c45",
+    "risk-ink": "#f09b95", "risk-bg": "#3b2422", "risk-line": "#6b3a36",
     "warn-ink": "#e5b273", "warn-bg": "#2c2314", "warn-line": "#514020",
 }
 
 ORDER = ["page-bg", "surface", "surface-2", "ink", "muted", "line",
          "accent", "accent-ink", "accent-soft", "accent-line", "on-accent",
+         "ok-ink", "ok-bg", "ok-line",
+         "risk-ink", "risk-bg", "risk-line",
          "warn-ink", "warn-bg", "warn-line"]
 
 # ---------------------------------------------------------------- 颜色工具

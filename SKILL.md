@@ -31,7 +31,7 @@ python3 scripts/theme_tokens.py --accent "#7c3aed" --tint-neutrals  # 中性色�
 
 复制 `assets/base-template.html` 到目标输出路径（如用户当前工作区，文件名用内容主题），将脚本输出的主题令牌**原样替换**其中的 `/*__THEME_TOKENS__*/` 占位符。
 
-模板已内置：移动端安全网（与原始管线逐字节一致，禁止改动）、标准组件库、IntersectionObserver 入场动效、iframe 测高脚本。只需在 `<div class="page">` 内按注释标记填充内容。
+模板已内置：移动端安全网（与原始管线逐字节一致，禁止改动）、标准组件库 + 交互组件库（关键词导航/落差对照/勾选清单/二选一）、入场动效（IntersectionObserver + 滚动/轮询兜底，确保 `.rv` 元素任何引擎与滚动方式下必然可见，4 秒终极全显）、**健壮的 iframe 自适应测高 + 锚点滚动脚本**（ResizeObserver + MutationObserver + 图片/字体/主题监听，rAF+定时器双保险，兼容 `app:*` 与 `voice-recorder:*` 双协议）。只需在 `<div class="page">` 内按注释标记填充内容。
 
 ### 3. 生成内容
 
@@ -46,6 +46,15 @@ python3 scripts/theme_tokens.py --accent "#7c3aed" --tint-neutrals  # 中性色�
 - 行动清单 2-4 步，每步动词开头
 - 结尾通用化：落款与预告面向大众
 
+**交互组件（借鉴原版真实分享页，按内容按需选用，不滥用）：**
+
+- `.kw-nav` 关键词主线导航：3 个递进关键词卡片 + 锚点，跳到正文 `.part[id]`；有明确 3 段主线时用，写到 hero 之后
+- `.gap-row` 落差对照：`信号 ≠ 真相` 三行对照，适合破题/澄清误区
+- `.crit` 勾选清单：读者逐项点圆圈确认，全过给正反馈。用于"自检/准入条件/核对项"，结构：`.crit-check`（`aria-pressed`）→ `.crit` → `.chk-foot`（含 `.chk-count` + `.alltxt`）
+- `.dl-btns` 二选一两难：点选项展开对应反馈。用于"要不要答应/选 A 还是 B"的决策演示，反馈写在 `<template data-fb="yes|no">`（可含任意 HTML），配 `.dl-fb` 容器
+- `.key` 核心诀窍框 / `.note` 注释条：加重关键结论
+- 交互组件 DOM 变化会自动触发重测高（脚本已内置），无需额外处理
+
 长文本（数千字以上）先分段提炼要点，再汇总成页，避免丢细节。
 
 ### 4. 校验并交付
@@ -57,7 +66,8 @@ python3 scripts/theme_tokens.py --accent "#7c3aed" --tint-neutrals  # 中性色�
 3. `<title>` 与 h1 一致；`lang="zh-CN"`
 4. 明色/暗色/≤600px 窄屏/prefers-reduced-motion 四类适配均在模板内覆盖
 5. 5 个 `data-visual-*` 属性齐全；figure 数量 2-5 且类型不重复
-6. 用 `present_files` 交付 HTML
+6. 若用了交互组件：勾选清单每个 `.crit-check` 有 `aria-label`，二选一反馈写在 `<template data-fb>` 而非属性里（避免 HTML 引号截断）
+7. 用 `present_files` 交付 HTML
 
 ## 主题色速查
 
@@ -75,6 +85,6 @@ python3 scripts/theme_tokens.py --accent "#7c3aed" --tint-neutrals  # 中性色�
 
 ## Resources
 
-- `scripts/theme_tokens.py` — 主题色令牌生成器（默认预设 / 派生 / JSON 输出）
-- `assets/base-template.html` — 页面骨架（含安全网 + 组件库 + 动效脚本，唯一占位符是 `/*__THEME_TOKENS__*/`）
-- `references/pipeline.md` — 完整管线契约：主题色派生规则表、硬性输出约束、页面结构契约、组件规范、图表元数据契约、内容质量规则、分享封面 SVG 模板
+- `scripts/theme_tokens.py` — 主题色令牌生成器（默认预设 / 派生 / JSON 输出；含 warn/ok/risk 语义色）
+- `assets/base-template.html` — 页面骨架（含安全网 + 标准组件库 + 交互组件库 + 动效/测高脚本，唯一占位符是 `/*__THEME_TOKENS__*/`）
+- `references/pipeline.md` — 完整管线契约：主题色派生规则表、硬性输出约束、页面结构契约、组件规范、图表元数据契约、内容质量规则、交互组件契约、分享封面 SVG 模板

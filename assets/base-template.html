@@ -173,6 +173,53 @@ ol.steps li p{margin:2px 0 0;font-size:14px;color:var(--muted);}
 .signoff{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;margin-top:30px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);}
 .signoff b{color:var(--ink);}
 
+/* ===== 交互组件（勾选清单 / 二选一决策，借鉴微信 AI 录音笔真实分享页） ===== */
+/* 关键词主线导航：3 步递进卡片 + 箭头分隔（5 列网格，sep 占 1 列），锚点跳转正文分区 */
+.kw-nav{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr);gap:6px;margin:20px 0 6px;align-items:stretch;}
+.kw{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px;transition:border-color .15s;}
+.kw:hover{border-color:var(--accent);}
+.kw-no{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:11px;color:var(--accent-ink);font-weight:700;letter-spacing:.1em;}
+.kw-name{font-size:16px;font-weight:700;}
+.kw-sub{font-size:11px;color:var(--muted);line-height:1.5;}
+.kw-sep{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;}
+.kw-sep::before{content:"→";}
+/* 落差对照：信号 ≠ 真相 */
+.gap-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.6;}
+.gap-row:last-child{border-bottom:none;}
+.gap-signal{color:var(--muted);}
+.gap-neq{color:var(--accent-ink);font-weight:800;font-size:16px;}
+.gap-real{font-weight:600;}
+/* 勾选清单：逐项确认，全部完成给正反馈 */
+.chk-hint{font-size:12.5px;color:var(--muted);margin:0 0 8px;}
+.crit{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 14px;margin:10px 0;transition:border-color .2s,background .2s;}
+.crit.done{border-color:var(--ok-line);background:var(--ok-bg);}
+.crit-head{display:flex;align-items:flex-start;gap:10px;}
+.crit-check{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);background:var(--surface);cursor:pointer;padding:0;position:relative;margin-top:2px;transition:background .2s,border-color .2s;}
+.crit-check[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);}
+.crit-check[aria-pressed="true"]::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:var(--on-accent);font-size:13px;font-weight:800;}
+.crit-title{font-size:14.5px;font-weight:700;line-height:1.5;}
+.crit-body{margin:8px 0 0;padding-left:32px;font-size:13.5px;color:var(--muted);}
+.crit-body li{list-style:disc;margin:4px 0;line-height:1.65;}
+.chk-foot{font-size:13px;color:var(--muted);margin:12px 0 0;}
+.chk-foot b{color:var(--accent-ink);font-weight:800;}
+.chk-foot .alltxt{color:var(--ok-ink);font-weight:700;}
+.chk-foot.all{color:var(--ok-ink);}
+/* 二选一两难决策：点击选项展开对应反馈 */
+.dl-scene{font-size:14.5px;line-height:1.7;margin:0 0 12px;}
+.dl-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.dl-btn{flex:1 1 120px;min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:14.5px;font-weight:700;cursor:pointer;padding:10px;transition:border-color .15s,background .15s;}
+.dl-btn:hover{border-color:var(--accent);}
+.dl-btn.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink);}
+.dl-fb{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);font-size:13.5px;line-height:1.7;}
+.dl-fb[hidden]{display:none;}
+.fb-tag{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:1px 8px;margin-right:6px;vertical-align:1px;}
+.fb-tag.t-bad{color:var(--risk-ink);background:var(--risk-bg);}
+.fb-tag.t-warn{color:var(--warn-ink);background:var(--warn-bg);}
+/* 核心诀窍 / 注释条 */
+.key{margin:16px 0;padding:13px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;font-size:14.5px;line-height:1.7;color:var(--accent-ink);}
+.note{font-size:13.5px;color:var(--muted);line-height:1.7;margin:12px 0;}
+.note span{font-weight:700;color:var(--ink);margin-right:6px;}
+
 /* 入场动效 */
 .rv{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease;}
 .rv.in{opacity:1;transform:none;}
@@ -201,6 +248,9 @@ ol.steps li p{margin:2px 0 0;font-size:14px;color:var(--muted);}
   .dv-chain{grid-template-columns:minmax(0,1fr);}
   .dv-join{text-align:center;}
   .creed{font-size:16.5px;}
+  .gap-row{grid-template-columns:minmax(0,1fr);text-align:center;gap:2px;}
+  .gap-neq{line-height:1;}
+  .crit-body{padding-left:0;}
 }
 </style>
 </head>
@@ -221,8 +271,17 @@ ol.steps li p{margin:2px 0 0;font-size:14px;color:var(--muted);}
   <div class="trio-card rv"><i>03</i><b>{模式三}</b><span>{一句话说明}</span></div>
 </div>
 
-<!-- ============ 第一部分（按内容分多个 part） ============ -->
-<div class="part rv"><span>第一部分 · {分区标题}</span></div>
+<!-- ============ 关键词主线导航（可选：3 个递进关键词，锚点跳正文） ============ -->
+<!-- <nav class="kw-nav" aria-label="内容主线导航">
+  <a class="kw" href="#part1"><span class="kw-no">01</span><span class="kw-name">{关键词一}</span><span class="kw-sub">{一句话}</span></a>
+  <span class="kw-sep" aria-hidden="true"></span>
+  <a class="kw" href="#part2"><span class="kw-no">02</span><span class="kw-name">{关键词二}</span><span class="kw-sub">{一句话}</span></a>
+  <span class="kw-sep" aria-hidden="true"></span>
+  <a class="kw" href="#part3"><span class="kw-no">03</span><span class="kw-name">{关键词三}</span><span class="kw-sub">{一句话}</span></a>
+</nav> -->
+
+<!-- ============ 第一部分（按内容分多个 part，id 供导航锚点） ============ -->
+<div class="part rv" id="part1"><span>第一部分 · {分区标题}</span></div>
 
 <section class="mod rv">
   <div class="eyebrow">{小标签}</div>
@@ -249,6 +308,41 @@ ol.steps li p{margin:2px 0 0;font-size:14px;color:var(--muted);}
     <p>{误区原话}</p>
     <p class="wn">{纠正说明}</p>
   </div>
+
+  <!-- 交互·落差对照（按需）：信号 ≠ 真相 -->
+  <!-- <div class="gap-row"><span class="gap-signal">{表面信号}</span><span class="gap-neq">≠</span><span class="gap-real">{背后真相}</span></div> -->
+
+  <!-- 交互·勾选清单（按需）：逐项确认，全过给正反馈；脚本已内置 -->
+  <!--
+  <p class="chk-hint">逐项核对，点左侧圆圈确认</p>
+  <div class="crit">
+    <div class="crit-head">
+      <button class="crit-check" aria-pressed="false" aria-label="确认第一项"></button>
+      <span class="crit-title">① {核对项标题}</span>
+    </div>
+    <ul class="crit-body"><li>{要点}</li><li>{要点}</li></ul>
+  </div>
+  <div class="crit">
+    <div class="crit-head">
+      <button class="crit-check" aria-pressed="false" aria-label="确认第二项"></button>
+      <span class="crit-title">② {核对项标题}</span>
+    </div>
+    <ul class="crit-body"><li>{要点}</li></ul>
+  </div>
+  <p class="chk-foot">已确认 <b class="chk-count">0</b>/2<span class="alltxt"></span></p>
+  -->
+
+  <!-- 交互·二选一两难（按需）：点选项展开反馈；文案放 <template>，可含任意 HTML -->
+  <!--
+  <p class="dl-scene">{两难场景描述}？</p>
+  <div class="dl-btns">
+    <button class="dl-btn" data-ans="yes">答应</button>
+    <button class="dl-btn" data-ans="no">不答应</button>
+  </div>
+  <template data-fb="yes"><span class="fb-tag t-bad">别急着答</span>{选A的反馈文案，可含 <strong>任意标签</strong>}</template>
+  <template data-fb="no"><span class="fb-tag t-warn">也不对</span>{选B的反馈文案}</template>
+  <div class="dl-fb" hidden></div>
+  -->
 </section>
 
 <!-- ============ 后续分区：复制 part + mod 结构 ============ -->
@@ -283,27 +377,217 @@ ol.steps li p{margin:2px 0 0;font-size:14px;color:var(--muted);}
 
 <script>
 (function(){
-  if(!('IntersectionObserver' in window)) return;
   var els=[].slice.call(document.querySelectorAll('.rv'));
-  var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
-    });
-  },{threshold:.06,rootMargin:'0px 0px -4% 0px'});
-  els.forEach(function(el){io.observe(el);});
+  if(!els.length) return;
+  function check(){
+    var vh=window.innerHeight||document.documentElement.clientHeight||0;
+    var left=0;
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      if(el.classList.contains('in')) continue;
+      var r=el.getBoundingClientRect();
+      if(r.top<vh*0.94&&r.bottom>0){ el.classList.add('in'); continue; }
+      left++;
+    }
+    return left;
+  }
+  var ticking=false;
+  function onScroll(){
+    if(ticking) return;
+    ticking=true;
+    if(window.requestAnimationFrame){ window.requestAnimationFrame(function(){ check(); ticking=false; }); }
+    else { check(); ticking=false; }
+  }
+  window.addEventListener('scroll',onScroll,true);
+  window.addEventListener('resize',onScroll);
+  if('IntersectionObserver' in window){
+    try{
+      var io=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      },{threshold:.06,rootMargin:'0px 0px -4% 0px'});
+      els.forEach(function(el){io.observe(el);});
+    }catch(err){}
+  }
+  check();
+  setTimeout(check,300);
+  setTimeout(check,1000);
+  var timer=setInterval(function(){ if(check()===0){ clearInterval(timer); } },500);
+  setTimeout(function(){
+    for(var i=0;i<els.length;i++){ els[i].classList.add('in'); }
+    clearInterval(timer);
+  },4000);
 })();
 </script>
 <script>
+/* 高度自适应 + 锚点滚动（借鉴微信 AI 录音笔真实分享页协议）
+   消息类型：app:resize / voice-recorder:resize（兼容双协议）
+   app:measure / voice-recorder:measure（父页请求重测）→ 回传 height/bg/state
+   app:scroll / voice-recorder:scroll（锚点跳转，父页据此滚动） */
 (function(){
-  var RESIZE='app:resize';
-  function measure(){
-    var h=Math.ceil(Math.max(document.body.scrollHeight,document.documentElement.offsetHeight));
-    var bg=getComputedStyle(document.body).backgroundColor;
-    window.parent.postMessage({type:RESIZE,height:h,backgroundColor:bg},'*');
+  var RESIZE='app:resize', MEASURE='app:measure', SCROLL='app:scroll';
+  var STATE_ATTR='data-recap-state', DEFAULT_STATE='ok', FALLBACK_DELAY=120;
+  var pending=false, pendingTimer=null, lastHeight=0, lastBg;
+  var raf=window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(cb){return setTimeout(cb,16);};
+  function readState(){ try{return document.documentElement.getAttribute(STATE_ATTR)||DEFAULT_STATE;}catch(e){return DEFAULT_STATE;} }
+  function isBlank(c){ return !c || c==='transparent' || /^rgba\([^)]*,\s*0\s*\)$/.test(c); }
+  function readBg(){
+    try{
+      var els=[document.body,document.documentElement];
+      for(var i=0;i<els.length;i++){
+        if(!els[i]) continue;
+        var c=getComputedStyle(els[i]).backgroundColor;
+        if(isBlank(c)) continue;
+        // 半透明色不能作为外层底色，交给父页默认色兜底
+        if(/^rgba\(/.test(c) && !/,\s*1\s*\)$/.test(c)) return '';
+        return c;
+      }
+    }catch(e){}
+    return '';
   }
-  window.addEventListener('load',measure);
-  if('ResizeObserver' in window){new ResizeObserver(measure).observe(document.body);}
-  setInterval(measure,1000);
+  function post(type,extra){
+    var msg=Object.assign({type:type},extra||{});
+    try{ window.parent.postMessage(msg,'*'); }catch(e){}
+    try{ window.parent.postMessage(Object.assign({},msg,{type:type.replace(/^app:/,'voice-recorder:')}),'*'); }catch(e){}
+  }
+  function measure(){
+    pending=false;
+    if(pendingTimer){clearTimeout(pendingTimer);pendingTimer=null;}
+    var body=document.body;
+    if(!body) return;
+    var s=getComputedStyle(body);
+    var h=Math.ceil(Math.max(body.scrollHeight,body.offsetHeight)+(parseFloat(s.marginTop)||0)+(parseFloat(s.marginBottom)||0));
+    var bg=readBg();
+    if(h<=0 || (h===lastHeight && bg===lastBg)) return;
+    lastHeight=h; lastBg=bg;
+    post(RESIZE,{height:h,backgroundColor:bg,state:readState()});
+  }
+  function report(){
+    if(pending) return;
+    pending=true;
+    // rAF 在后台标签可能被节流长期不触发，定时器兜底解锁，避免闩锁卡死
+    pendingTimer=setTimeout(measure,FALLBACK_DELAY);
+    raf(measure);
+  }
+  function scrollToAnchor(hash){
+    if(window.parent===window || !hash || hash.charAt(0)!=='#') return;
+    var target=document.querySelector(':target');
+    if(!target){
+      var name=hash.slice(1);
+      try{name=decodeURIComponent(name);}catch(e){}
+      if(name && name.toLowerCase()!=='top') return;
+    }
+    if(target && !target.getClientRects().length) return;
+    measure(); // 先同步高度，避免父页按旧高度截断坐标
+    var top=target?target.getBoundingClientRect().top+(window.pageYOffset||0):0;
+    if(target) top-=parseFloat(getComputedStyle(target).scrollMarginTop)||0;
+    if(!isFinite(top)) return;
+    post(SCROLL,{top:Math.max(0,top)});
+  }
+  window.addEventListener('message',function(ev){
+    if(ev.source!==window.parent||!ev.data) return;
+    var t=ev.data.type;
+    if(t===MEASURE||t==='voice-recorder:measure'){ lastHeight=0; report(); }
+  });
+  document.addEventListener('click',function(ev){
+    if(ev.defaultPrevented||ev.button!==0||ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.altKey) return;
+    var link=ev.target;
+    while(link&&(!link.tagName||link.tagName.toLowerCase()!=='a')) link=link.parentNode;
+    if(!link||window.parent===window) return;
+    var prev=window.location.href;
+    setTimeout(function(){
+      if(ev.defaultPrevented||window.location.href!==prev) return;
+      var href=link.href;
+      if(typeof href!=='string'||href!==prev) return;
+      var i=href.indexOf('#');
+      if(i>=0) scrollToAnchor(href.slice(i));
+    },0);
+  },true);
+  window.addEventListener('hashchange',function(){
+    var href=window.location.href;
+    setTimeout(function(){ if(window.location.href===href){ var i=href.indexOf('#'); if(i>=0) scrollToAnchor(href.slice(i)); } },0);
+  });
+  function watchImages(){
+    var imgs=document.images||[];
+    for(var i=0;i<imgs.length;i++){ if(imgs[i].complete||!imgs[i].addEventListener) continue; imgs[i].addEventListener('load',report); imgs[i].addEventListener('error',report); }
+  }
+  function observe(){
+    if('ResizeObserver' in window){ new ResizeObserver(report).observe(document.documentElement); if(document.body) new ResizeObserver(report).observe(document.body); }
+    if('MutationObserver' in window){ new MutationObserver(report).observe(document.documentElement,{attributes:true,attributeFilter:['class','style','data-theme','data-recap-state'],childList:true,subtree:true}); }
+    if(window.matchMedia){ var mq=window.matchMedia('(prefers-color-scheme: dark)'); if(mq.addEventListener) mq.addEventListener('change',report); else if(mq.addListener) mq.addListener(report); }
+    watchImages();
+    report();
+    if(document.fonts&&document.fonts.ready&&document.fonts.ready.then) document.fonts.ready.then(report);
+  }
+  if(document.readyState==='loading'&&document.addEventListener) document.addEventListener('DOMContentLoaded',observe); else observe();
+  window.addEventListener('load',report);
+  window.addEventListener('resize',report);
+})();
+</script>
+<script>
+/* 交互组件：勾选清单 + 二选一决策（借鉴微信 AI 录音笔真实分享页）
+   勾选清单：.crit-check 切换 aria-pressed，父级 .crit 加 done，统计 .chk-count / .chk-foot.all / .alltxt
+   二选一：.dl-btn 互斥选中，从同级 <template data-fb="yes|no"> 取文案填入 .dl-fb（兼容 data-fb-* 属性）*/
+(function(){
+  // 勾选清单
+  function bindCheck(root){
+    var checks=(root||document).querySelectorAll('.crit-check');
+    if(!checks.length) return;
+    function update(scope){
+      var crits=scope.querySelectorAll('.crit');
+      var on=scope.querySelectorAll('.crit-check[aria-pressed="true"]').length;
+      var foot=scope.querySelector('.chk-foot');
+      var cnt=scope.querySelector('.chk-count');
+      if(cnt) cnt.textContent=on;
+      if(foot){
+        foot.classList.toggle('all',on===crits.length&&crits.length>0);
+        var t=foot.querySelector('.alltxt');
+        if(t) t.textContent=(on===crits.length&&crits.length>0)?' ✓ 全部通过':'';
+      }
+    }
+    checks.forEach(function(btn){
+      if(btn.dataset.bound) return;
+      btn.dataset.bound='1';
+      btn.addEventListener('click',function(){
+        var on=btn.getAttribute('aria-pressed')==='true';
+        btn.setAttribute('aria-pressed',String(!on));
+        var crit=btn.closest('.crit');
+        if(crit) crit.classList.toggle('done',!on);
+        // 找到包含该清单的作用域：优先 .crit 的共同 figure/mod 祖先
+        var scope=btn.closest('figure')||btn.closest('.mod')||document;
+        update(scope);
+      });
+    });
+    var scopes=new Set();
+    checks.forEach(function(b){ scopes.add(b.closest('figure')||b.closest('.mod')||document); });
+    scopes.forEach(update);
+  }
+  // 二选一
+  function bindDilemma(){
+    document.querySelectorAll('.dl-btns').forEach(function(group){
+      if(group.dataset.bound) return;
+      group.dataset.bound='1';
+      var fb=group.parentNode.querySelector('.dl-fb');
+      // 反馈文案优先取 <template data-fb>，支持任意 HTML；兼容旧式 data-fb-* 属性
+      var tpls={};
+      group.parentNode.querySelectorAll('template[data-fb]').forEach(function(t){ tpls[t.getAttribute('data-fb')]=t.innerHTML; });
+      group.querySelectorAll('.dl-btn').forEach(function(b){
+        b.addEventListener('click',function(){
+          group.querySelectorAll('.dl-btn').forEach(function(x){x.classList.remove('sel');});
+          b.classList.add('sel');
+          if(!fb) return;
+          var key=b.getAttribute('data-ans');
+          var html=(key&&tpls[key]!=null)?tpls[key]:(group.getAttribute('data-fb-'+key)||'');
+          fb.innerHTML=html;
+          fb.hidden=false;
+          if(window.dispatchEvent) window.dispatchEvent(new Event('resize'));
+        });
+      });
+    });
+  }
+  if(document.readyState==='loading'&&document.addEventListener) document.addEventListener('DOMContentLoaded',function(){bindCheck();bindDilemma();});
+  else { bindCheck(); bindDilemma(); }
 })();
 </script>
 <noscript><style>.rv{opacity:1;transform:none}</style></noscript>

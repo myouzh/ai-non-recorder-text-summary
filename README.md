@@ -24,6 +24,8 @@
 - **640px 窄栏居中** — 桌面两侧留白，任何窄屏不出现横向滚动
 - **四类适配全覆盖** — 明色 / 暗色（`prefers-color-scheme`）、≤600px 窄屏、减少动效（`prefers-reduced-motion`）
 
+**交互组件（借鉴微信 AI 录音笔真实分享页，模板内置）：** 关键词主线导航、落差对照、勾选清单（逐项确认 + 全过反馈）、二选一两难决策（点击展开反馈）。全部原生 JS、无障碍标记齐全，DOM 变化自动触发重测高；按内容按需选用，不滥用。iframe 通信采用双协议（`app:*` / `voice-recorder:*`），ResizeObserver + MutationObserver + 主题/图片/字体监听 + rAF 定时器双保险。
+
 ## 主题色（核心扩展）
 
 用户不指定主题色时，**一律使用默认预设（原始微信绿色系），不询问、不发明新配色**。指定方式：
@@ -50,6 +52,8 @@ python3 scripts/theme_tokens.py --json               # JSON 输出
 | accent-soft | 混白 88% | 混页面底色 72% |
 | accent-line | 混白 70% | 混页面底色 60% |
 | on-accent | 亮度 >0.45 取深墨，否则白 | 亮度 >0.35 取深墨，否则白 |
+
+语义色 `ok-*` / `risk-*` / `warn-*`（成功 / 风险 / 警示）不随主题色变化，供交互组件使用，明暗两套均内置。
 
 ## 快速开始
 
@@ -86,7 +90,7 @@ cp -r ai-non-recorder-text-summary ~/.agents/skills/
 | 通用标准 | 根目录 `AGENTS.md` |
 | 纯 API 调用 | system prompt 直接粘贴 SKILL.md 正文 |
 
-生成流程四步：**定主题色 → 套骨架（替换 `/*__THEME_TOKENS__*/` 占位符）→ 按 `references/pipeline.md` 契约填内容 → 过六项校验交付**。
+生成流程四步：**定主题色 → 套骨架（替换 `/*__THEME_TOKENS__*/` 占位符）→ 按 `references/pipeline.md` 契约填内容 → 过校验交付**。
 
 两条红线：安全网 CSS 禁止改动一个字符；主题色必须走 `theme_tokens.py`。
 
@@ -102,7 +106,7 @@ ai-non-recorder-text-summary/
 ├── references/
 │   └── pipeline.md            # 完整管线契约：结构/组件/图表元数据/内容规则
 └── assets/
-    ├── base-template.html     # 页面骨架：安全网 + 组件库 + 动效脚本
+    ├── base-template.html     # 页面骨架：安全网 + 组件库 + 交互组件 + 动效/测高脚本
     └── cover.svg              # 512×512 分享封面（科技蓝）
 ```
 
@@ -116,4 +120,4 @@ ai-non-recorder-text-summary/
 
 ## 质量校验清单
 
-生成后逐项过：无外部请求 → 无 `position:fixed` → `<title>` 与 h1 一致 → 四类适配 → 每张图带全 5 个 `data-visual-*` 属性 → figure 数量 2-5 且类型不重复。
+生成后逐项过：无外部请求 → 无 `position:fixed` → `<title>` 与 h1 一致 → 四类适配 → 每张图带全 5 个 `data-visual-*` 属性 → figure 数量 2-5 且类型不重复 → 交互组件无障碍标记齐全（清单项带 `aria-label`、二选一反馈放 `<template data-fb>`）、锚点有对应 id。

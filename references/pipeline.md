@@ -48,7 +48,7 @@ python3 theme_tokens.py --json                       # JSON 输出（便于程�
 | on-accent | accent 亮度 >0.45 取深墨，否则白 | dark-accent 亮度 >0.35 取深墨，否则白 |
 | 中性色 | 默认保持原预设；`--tint-neutrals` 时按色相 8–16% 低饱和重生成 | 同上 |
 
-warn 家族（琥珀警示色）为语义色，不随主题色变化。
+warn 家族（琥珀警示）、ok（成功绿）、risk（风险红）为语义色，不随主题色变化，明暗两套均已内置。
 
 ---
 
@@ -88,10 +88,22 @@ warn 家族（琥珀警示色）为语义色，不随主题色变化。
 - 对照矩阵：`.payboard > .pb-col.pb-no|.pb-yes`，`.pb-item` 条目（否定侧用 `<s>` 删除线），`.mk` 放 ✕/✓
 - 分工图：`.dv > .dv-chain(.dv-box + .dv-join(＋) + .dv-you) + .dv-down(↓) + .dv-out`，`.dv-chips span` 标签
 - SVG 图示：用 `.arena`（虚线容器）、`.lk-dash path`（流动虚线，动画 dashMove）、`.mem circle`（成员）、`.host`（主角）、`.t-on/.t-mut/.t-ink`（文字）、`.pill-bg/.pill-t`（药丸标签）、`.arr-ok`（箭头）等类名；文字必须用 `<text>`，不用图片
-- 入场动效：模块加 `class="mod rv"`/`class="part rv"`（IntersectionObserver 脚本已内置）
+- 入场动效：模块加 `class="mod rv"`/`class="part rv"`（IntersectionObserver + 滚动/轮询兜底脚本已内置，禁止删除 `.rv` 元素或改用其他显隐机制）
 - 流动动画：连接线用 `repeating-linear-gradient` + `animation:marchY`，SVG 虚线用 `animation:dashMove`
 
 可自由发明同类组件类名，但必须满足安全网约束：避免使用含 grid/board/split/cols/columns/layout/panel/row/cluster 的类名承载需要保留多列的布局（除非接受窄屏自动单列）；含 flow/chain/timeline 的 flex 容器会在窄屏改为纵向；含 arrow 的元素会在窄屏旋转 90°（因此向下箭头类名用 `.dv-down` 而非 arrow）。
+
+### 交互组件（已在 base-template.html 内置，按需选用）
+
+参考微信 AI 录音笔真实分享页还原，模板已内置配套 CSS 与 JS，只需按下列结构填充：
+
+- **关键词主线导航**：`<nav class="kw-nav">` 内 3 个 `<a class="kw" href="#partN">`（`.kw-no`/`.kw-name`/`.kw-sub`）+ 2 个 `.kw-sep` 占位。对应正文 `.part` 需带 `id="partN"`。适合 3 段强递进的内容
+- **落差对照**：`.gap-row` > `.gap-signal` + `.gap-neq`（≠）+ `.gap-real`，适合"表面信号 ≠ 背后真相"式澄清
+- **勾选清单**：`p.chk-hint` + 多个 `.crit`（`.crit-head` 内 `<button class="crit-check" aria-pressed="false" aria-label="...">` + `.crit-title`，配 `.crit-body` 列表）+ `p.chk-foot`（含 `<b class="chk-count">0</b>` 与 `<span class="alltxt">`）。用户逐项点击切换 `aria-pressed`/`.done`，统计到 `.chk-count`，全过时 `.chk-foot` 加 `.all` 且 `.alltxt` 显示 `✓ 全部通过`。**每个 `.crit-check` 必须有 `aria-label`**
+- **二选一两难**：`p.dl-scene` + `.dl-btns`（内含 `<button class="dl-btn" data-ans="yes|no">`）+ 同级 `<template data-fb="yes">`/`<template data-fb="no">` 两个反馈模板 + `div.dl-fb[hidden]`。点击选项互斥加 `.sel`，把对应 template 的 innerHTML 填入 `.dl-fb` 并去掉 hidden。**反馈文案必须放 `<template data-fb>`，不要放 `data-fb-*` 属性**（属性引号会被文案里的 HTML 截断）
+- **核心诀窍 / 注释**：`.key`（左强调竖线框）/ `.note`（`<span>` 小标题 + 正文）
+
+交互组件的显隐/文案变化会改变正文高度——内置测高脚本的 MutationObserver 会自动捕获并重报高度，无需手动触发。
 
 ---
 
@@ -127,7 +139,7 @@ warn 家族（琥珀警示色）为语义色，不随主题色变化。
 1. **分段-汇总两段式**：长录音先切分转写段，每段生成结构化要点，再汇总生成最终 HTML，避免超长上下文丢细节
 2. **产物存储**：HTML + 封面图（可用文末 SVG 麦克风图标模板渲染 PNG）按 `{hash}/v{版本}/` 路径存对象存储
 3. **分享网关**：`/api/getFrame?share_token=...` 代理存储 HTML，响应头加 `CSP: sandbox allow-scripts; frame-ancestors 'self'`，iframe 用 `sandbox="allow-scripts" referrerpolicy="no-referrer"`
-4. **高度自适应**：子页 postMessage 上报 `scrollHeight` 与背景色，父页同步 iframe 高度与底色（脚本已内置在 base-template.html）
+4. **高度自适应与锚点**：子页通过 postMessage 上报高度/背景色/状态，父页同步 iframe 高度与底色。协议与触发机制见下节「十、iframe 通信契约」（脚本已内置在 base-template.html）
 5. **质量校验**：生成后检查 ① 无外部请求 ② 无横向滚动 ③ 暗色模式 ④ console 无报错
 6. **元数据用途**：`data-visual-*` 可用于后续"重新生成单张图"、无障碍描述、分享卡片文案提取
 
@@ -154,3 +166,36 @@ warn 家族（琥珀警示色）为语义色，不随主题色变化。
   <circle cx="403" cy="171" r="11" fill="none" stroke="#c08a28" stroke-width="3"/>
 </svg>
 ```
+
+---
+
+## 十、iframe 通信契约（逆向自微信 AI 录音笔真实分享页，已内置在 base-template.html）
+
+本 skill 产物是**被嵌入 iframe 的内容页**（相当于原版 `/wetype/api/getVoiceRecorderFrame` 返回的正文），外层壳（归属行 + 下载引导）由宿主提供。子页与父页通过 postMessage 协作，脚本已内置，无需重写。
+
+### 消息协议（双协议兼容）
+
+| 方向 | 消息 type | 载荷 | 用途 |
+|---|---|---|---|
+| 子→父 | `app:resize`（同时发 `voice-recorder:resize`） | `{height, backgroundColor, state}` | 上报正文高度/底色/状态，父页设 iframe 高度与页面底色 |
+| 父→子 | `app:measure` / `voice-recorder:measure` | — | 父页主动请求重测（收到后清空缓存高度并重新上报） |
+| 子→父 | `app:scroll`（同时发 `voice-recorder:scroll`） | `{top}` | 锚点跳转：父页据正文坐标滚动（iframe 内原生滚动在全文扩高后会归零） |
+
+- `state` 取 `document.documentElement` 的 `data-recap-state`，默认 `ok`，父页可据此显示加载/错误态
+- `backgroundColor`：从 body→html 取第一个非透明背景；半透明（rgba 且 alpha<1）视为不可用返回空串，交父页默认色兜底
+- 高度 = `max(scrollHeight, offsetHeight)` + body 上下 margin，`Math.ceil`
+
+### 重测触发（健壮性关键，勿删）
+
+- `ResizeObserver` 观察 html 与 body → 内容尺寸变化
+- `MutationObserver` 观察 `class/style/data-theme/data-recap-state` + 子节点 + 子树 → 交互组件改动、异步样式、未标注尺寸图片
+- `window.matchMedia('(prefers-color-scheme: dark)')` change → 主题切换
+- 每张图片 `load`/`error`；`document.fonts.ready`；`load`/`resize` 事件
+- `report()` 用 rAF + 120ms 定时器双保险并加闩锁（pending），避免后台标签 rAF 被节流导致闩锁永久卡住；未变化则跳过上报
+
+### 锚点跳转
+
+- 捕获阶段监听链接点击 + `hashchange`，`setTimeout(0)` 等默认动作/委托完成后再判断
+- 仅对**同一 URL 的重复 fragment 点击**或 hashchange 补 scroll（新 fragment 交浏览器原生处理）
+- 用 `:target` 读浏览器选中的元素，取 `getBoundingClientRect().top + pageYOffset - scrollMarginTop`，先 `measure()` 同步高度再报给父页
+- 因此正文里 `[id]` 需设 `scroll-margin-top`（模板安全网未含，需要时自行加 `[id]{scroll-margin-top:20px}`）
